@@ -39,7 +39,7 @@ import (
 	db.Close()
 } */
 
-func crearConexion() (*sql.DB, error) {
+func CrearConexion() (*sql.DB, error) {
 	//usuario, contraseña, puerto y nombre de la base de datos
 	conexion := "root:1234@tcp(localhost:3306)/music"
 	db, err := sql.Open("mysql", conexion)
@@ -56,7 +56,7 @@ func crearConexion() (*sql.DB, error) {
 	return db, nil
 }
 
-func queryMusic(ctx context.Context, db *sql.DB, limite int64) error {
+func QueryMusic(ctx context.Context, db *sql.DB, limite int64) error {
 	qry := `select  * from canciones limit ?;`
 
 	rows, err := db.QueryContext(ctx, qry, limite)

@@ -1,6 +1,8 @@
 package api
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,22 +16,22 @@ type Cancion struct {
 	Url_image string `json:"url_image"`
 }
 
-func (s *Cancion) getCanciones(c *gin.Context) {
+func GetCanciones(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK)
+}
+
+func GetCancionByID(c *gin.Context) {
 
 }
 
-func (s *Cancion) getCancionByID(c *gin.Context) {
+func PostCancion(c *gin.Context) {
 
 }
 
-func (s *Cancion) postCancion(c *gin.Context) {
+func PutCancion(c *gin.Context) {
 
 }
 
-func (s *Cancion) putCancion(c *gin.Context) {
-
-}
-
-func (s *Cancion) deleteCancion(c *gin.Context) {
+func DeleteCancion(c *gin.Context) {
 
 }
