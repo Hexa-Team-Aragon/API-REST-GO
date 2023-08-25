@@ -65,8 +65,8 @@ func AddMusica(ctx context.Context, db *sql.DB, id int64, name string, album str
 }
 
 func UpdateMusica(ctx context.Context, db *sql.DB, id int64, name string, album string, artist string, genre string, year int64, url_image string) error {
-	query := `UPDATE canciones SET name = ?, album = ?, artist = ?, genre = ?, year = ?, url_image = ? wherte id = ?;`
-	_, err := db.ExecContext(ctx, query, id, name, album, artist, genre, year, url_image)
+	query := `UPDATE canciones SET name = ?, album = ?, artist = ?, genre = ?, year = ?, url_image = ? where id = ?;`
+	_, err := db.ExecContext(ctx, query, name, album, artist, genre, year, url_image, id)
 	if err != nil {
 		return err
 	}

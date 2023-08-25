@@ -41,21 +41,24 @@ func PostCancion(c *gin.Context) {
 }
 
 func PutCancion(c *gin.Context) {
-	p := c.Param("id")
-	id, err := strconv.ParseInt(p, 10, 0)
+	id := c.Param("id")
+	indexToRemove := id
+	idint, err := strconv.ParseInt(indexToRemove, 10, 0)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"Error": "Ocurrio un error"})
+		c.JSON(http.StatusInternalServerError, gin.H{"Error": "Ocurrio un error server"})
 		return
 	}
 
 	var cancion modelo.Cancion
+	fmt.Println(cancion)
 	err = json.NewDecoder(c.Request.Body).Decode(&cancion)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Ocurrio un error"})
 		return
 	}
 
-	err = conexion.UpdateMusica(ctx, db, id, cancion.Name, cancion.Album, cancion.Artist, cancion.Genre, cancion.Year, cancion.Url_image)
+	err = conexion.UpdateMusica(ctx, db, idint, cancion.Name, cancion.Album, cancion.Artist, cancion.Genre, cancion.Year, cancion.Url_image)
+	fmt.Println(cancion)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"Error": "Ocurrio un error"})
 		return
