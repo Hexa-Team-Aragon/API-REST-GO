@@ -14,14 +14,13 @@ import (
 )
 
 var db *sql.DB = conexion.CrearConexion()
+var ctx context.Context = context.Background()
 
 func GetCanciones(c *gin.Context) {
-	ctx := context.Background()
 	c.IndentedJSON(http.StatusOK, conexion.QueryMusic(ctx, db, 5))
 }
 
 func GetCancionByID(c *gin.Context) {
-
 }
 
 func PostCancion(c *gin.Context) {
@@ -32,7 +31,6 @@ func PostCancion(c *gin.Context) {
 		return
 	}
 
-	ctx := context.Background()
 	err = conexion.AddMusica(ctx, db, cancion.ID, cancion.Name, cancion.Album, cancion.Artist, cancion.Genre, cancion.Year, cancion.Url_image)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al agregar la canción"})
@@ -43,7 +41,27 @@ func PostCancion(c *gin.Context) {
 }
 
 func PutCancion(c *gin.Context) {
+	p := c.Param("id")
+	id, err := strconv.ParseInt(p, 10, 0)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"Error": "Ocurrio un error"})
+		return
+	}
 
+	var cancion modelo.Cancion
+	err = json.NewDecoder(c.Request.Body).Decode(&cancion)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Ocurrio un error"})
+		return
+	}
+
+	err = conexion.UpdateMusica(ctx, db, id, cancion.Name, cancion.Album, cancion.Artist, cancion.Genre, cancion.Year, cancion.Url_image)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"Error": "Ocurrio un error"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Canción actualizada exitosamente"})
 }
 
 func DeleteCancion(c *gin.Context) {
@@ -54,7 +72,6 @@ func DeleteCancion(c *gin.Context) {
 		fmt.Println("Error:", err)
 		return
 	}
-	ctx := context.Background()
 	c.IndentedJSON(http.StatusOK, conexion.DeleteMusica(ctx, db, idint))
 	c.JSON(http.StatusOK, gin.H{"message": "Cancion con el id " + id + " eliminada"})
 }

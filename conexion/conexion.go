@@ -64,6 +64,16 @@ func AddMusica(ctx context.Context, db *sql.DB, id int64, name string, album str
 
 }
 
+func UpdateMusica(ctx context.Context, db *sql.DB, id int64, name string, album string, artist string, genre string, year int64, url_image string) error {
+	query := `UPDATE canciones SET name = ?, album = ?, artist = ?, genre = ?, year = ?, url_image = ? wherte id = ?;`
+	_, err := db.ExecContext(ctx, query, id, name, album, artist, genre, year, url_image)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func DeleteMusica(ctx context.Context, db *sql.DB, id int64) error {
 	qryquitar := `DELETE FROM canciones WHERE id = ?`
 
