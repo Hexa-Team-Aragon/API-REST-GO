@@ -49,7 +49,7 @@ func CrearConexion() *sql.DB {
 	return db
 }
 
-func QueryMusic(ctx context.Context, db *sql.DB, limite int64) []modelo.Cancion {
+func QueryMusic(ctx context.Context, db *sql.DB, limite int) []modelo.Cancion {
 	qry := `select  * from canciones limit ?;`
 
 	rows, err := db.QueryContext(ctx, qry, limite)
@@ -87,21 +87,20 @@ func AddMusica(ctx context.Context, db *sql.DB, id int64, name string, album str
 
 }
 
-func deleteMusica(ctx context.Context, db *sql.DB, id int64) error {
-	num := id
+func DeleteMusica(ctx context.Context, db *sql.DB, id int64) error {
 	qryquitar := `DELETE FROM canciones WHERE id = ?`
 
-	result, err := db.Exec(qryquitar, id)
+	_, err := db.Exec(qryquitar, id)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Verificar el número de filas afectadas
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		log.Fatal(err)
-	}
+	//rowsAffected, err := result.RowsAffected()
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
 
-	fmt.Printf("Se elimino el libro con el id: %d Filas afectadas %d", num, rowsAffected)
+	//fmt.Printf("Se elimino el libro con el id: %d Filas afectadas %d", num, rowsAffected)
 	return nil
 }

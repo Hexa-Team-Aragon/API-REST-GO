@@ -6,7 +6,9 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -45,5 +47,14 @@ func PutCancion(c *gin.Context) {
 }
 
 func DeleteCancion(c *gin.Context) {
-
+	id := c.Param("id")
+	indexToRemove := id
+	idint, err := strconv.ParseInt(indexToRemove, 10, 0)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	ctx := context.Background()
+	c.IndentedJSON(http.StatusOK, conexion.DeleteMusica(ctx, db, idint))
+	c.JSON(http.StatusOK, gin.H{"message": "Cancion con el id " + id + " eliminada"})
 }
