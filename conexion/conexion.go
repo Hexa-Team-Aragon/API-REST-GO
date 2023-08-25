@@ -71,7 +71,7 @@ func QueryMusic(ctx context.Context, db *sql.DB, limite int64) []modelo.Cancion 
 	return cancion
 }
 
-func addMusica(ctx context.Context, db *sql.DB, id int64, name string, album string, artist string, genre string, year int64, url_image string) error {
+func AddMusica(ctx context.Context, db *sql.DB, id int64, name string, album string, artist string, genre string, year int64, url_image string) error {
 	qryañadir := ` INSERT INTO canciones (id, name, album, artist, genre, year, url_image) VALUES (?,?,?, ?, ?, ?, ?)`
 
 	result, err := db.ExecContext(ctx, qryañadir, id, name, album, artist, genre, year, url_image)
