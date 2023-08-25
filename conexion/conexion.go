@@ -6,43 +6,20 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 )
 
-/*func main() {
-
-	ctx := context.Background()
-
-	db, err := crearConexion()
-	if err != nil {
-		panic(err)
-	}
-
-	//leer todos los libros que hay
-
-	err = queryMusic(ctx, db, 20)
-	if err != nil {
-		panic(err)
-	}
-
-	//insertar un libro
-		err = añadirMusica(ctx, db, 17, "Kno", "GATEWAY", "ASTRO", "K-Pop", 2020, "https://upload.wikimedia.org/wikipedia/en/5/50/ASTRO_Gateway_EP_Cover.jpg")
-		if err != nil {
-			panic(err)
-		}
-	//Quitar un libro
-		err = quitarMusica(ctx, db, 7)
-		if err != nil {
-			panic(err)
-		}
-	db.Close()
-} */
-
 func CrearConexion() *sql.DB {
+	errorVariables := godotenv.Load()
+	if errorVariables != nil {
+		panic(errorVariables)
+	}
 	//usuario, contraseña, puerto y nombre de la base de datos
-	conexion := "root:1234@tcp(localhost:3306)/music"
-	db, _ := sql.Open("mysql", conexion)
+	db, _ := sql.Open("mysql", os.Getenv("DB_USER")+":"+os.Getenv("DB_PASSWORD")+
+		"@tcp("+os.Getenv("DB_SERVER")+":"+os.Getenv("DB_PORT")+")/"+os.Getenv("DB_NAME"))
 
 	//Numero maximo de conexiones
 	db.SetMaxOpenConns(5)
