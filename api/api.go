@@ -1,23 +1,19 @@
 package api
 
 import (
+	"conexionMysql/conexion"
+	"context"
+	"database/sql"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-type Cancion struct {
-	ID        int64  `json:"id"`
-	Name      string `json:"name"`
-	Album     string `json:"album"`
-	Artist    string `json:"Artist"`
-	Genre     string `json:"Genre"`
-	Year      int64  `json:"Year"`
-	Url_image string `json:"url_image"`
-}
+var db *sql.DB = conexion.CrearConexion()
 
 func GetCanciones(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK)
+	ctx := context.Background()
+	c.IndentedJSON(http.StatusOK, conexion.QueryMusic(ctx, db, 4))
 }
 
 func GetCancionByID(c *gin.Context) {

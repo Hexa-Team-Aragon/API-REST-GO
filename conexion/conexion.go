@@ -1,7 +1,7 @@
 package conexion
 
 import (
-	"conexionMysql/api"
+	"conexionMysql/modelo"
 	"context"
 	"database/sql"
 	"fmt"
@@ -39,44 +39,36 @@ import (
 	db.Close()
 } */
 
-func CrearConexion() (*sql.DB, error) {
+func CrearConexion() *sql.DB {
 	//usuario, contraseña, puerto y nombre de la base de datos
 	conexion := "root:1234@tcp(localhost:3306)/music"
-	db, err := sql.Open("mysql", conexion)
-	if err != nil {
-		panic(err)
-	}
+	db, _ := sql.Open("mysql", conexion)
+
 	//Numero maximo de conexiones
 	db.SetMaxOpenConns(5)
-
-	err = db.Ping()
-	if err != nil {
-		return nil, err
-	}
-	return db, nil
+	return db
 }
 
-func QueryMusic(ctx context.Context, db *sql.DB, limite int64) error {
+func QueryMusic(ctx context.Context, db *sql.DB, limite int64) []modelo.Cancion {
 	qry := `select  * from canciones limit ?;`
 
 	rows, err := db.QueryContext(ctx, qry, limite)
 	if err != nil {
-		return err
+		panic(err)
 	}
 
-	cancion := []api.Cancion{}
+	cancion := []modelo.Cancion{}
 
 	for rows.Next() {
-		b := api.Cancion{}
+		b := modelo.Cancion{}
 		err = rows.Scan(&b.ID, &b.Name, &b.Album, &b.Artist, &b.Genre, &b.Year, &b.Url_image)
 		if err != nil {
-			return err
+			panic(err)
 		}
 		cancion = append(cancion, b)
 	}
 
-	fmt.Println(cancion)
-	return nil
+	return cancion
 }
 
 func addMusica(ctx context.Context, db *sql.DB, id int64, name string, album string, artist string, genre string, year int64, url_image string) error {
