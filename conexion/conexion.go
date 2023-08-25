@@ -1,6 +1,7 @@
-package main
+package conexion
 
 import (
+	"conexionMysql/api"
 	"context"
 	"database/sql"
 	"fmt"
@@ -9,17 +10,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type Musica struct {
-	id        int64
-	name      string
-	album     string
-	artist    string
-	genre     string
-	year      int64
-	url_image string
-}
-
-func main() {
+/*func main() {
 
 	ctx := context.Background()
 
@@ -36,21 +27,17 @@ func main() {
 	}
 
 	//insertar un libro
-	/*
 		err = añadirMusica(ctx, db, 17, "Kno", "GATEWAY", "ASTRO", "K-Pop", 2020, "https://upload.wikimedia.org/wikipedia/en/5/50/ASTRO_Gateway_EP_Cover.jpg")
 		if err != nil {
 			panic(err)
 		}
-	*/
 	//Quitar un libro
-	/*
 		err = quitarMusica(ctx, db, 7)
 		if err != nil {
 			panic(err)
 		}
-	*/
 	db.Close()
-}
+} */
 
 func crearConexion() (*sql.DB, error) {
 	//usuario, contraseña, puerto y nombre de la base de datos
@@ -70,33 +57,30 @@ func crearConexion() (*sql.DB, error) {
 }
 
 func queryMusic(ctx context.Context, db *sql.DB, limite int64) error {
-	qry := `select  *
-	from canciones limit ?; `
+	qry := `select  * from canciones limit ?;`
 
 	rows, err := db.QueryContext(ctx, qry, limite)
 	if err != nil {
 		return err
 	}
 
-	music := []Musica{}
+	cancion := []api.Cancion{}
 
 	for rows.Next() {
-		b := Musica{}
-		err = rows.Scan(&b.id, &b.name, &b.album, &b.artist, &b.genre, &b.year, &b.url_image)
+		b := api.Cancion{}
+		err = rows.Scan(&b.ID, &b.Name, &b.Album, &b.Artist, &b.Genre, &b.Year, &b.Url_image)
 		if err != nil {
 			return err
 		}
-		music = append(music, b)
+		cancion = append(cancion, b)
 	}
 
-	fmt.Println(music)
+	fmt.Println(cancion)
 	return nil
 }
 
-func añadirMusica(ctx context.Context, db *sql.DB, id int64, name string, album string, artist string, genre string, year int64, url_image string) error {
-	qryañadir := ` INSERT INTO canciones (id, name, album, artist, genre, year, url_image) VALUES (?,?,?, ?, ?, ?, ?)
-
-`
+func addMusica(ctx context.Context, db *sql.DB, id int64, name string, album string, artist string, genre string, year int64, url_image string) error {
+	qryañadir := ` INSERT INTO canciones (id, name, album, artist, genre, year, url_image) VALUES (?,?,?, ?, ?, ?, ?)`
 
 	result, err := db.ExecContext(ctx, qryañadir, id, name, album, artist, genre, year, url_image)
 	if err != nil {
@@ -111,7 +95,7 @@ func añadirMusica(ctx context.Context, db *sql.DB, id int64, name string, album
 
 }
 
-func quitarMusica(ctx context.Context, db *sql.DB, id int64) error {
+func deleteMusica(ctx context.Context, db *sql.DB, id int64) error {
 	num := id
 	qryquitar := `DELETE FROM canciones WHERE id = ?`
 
